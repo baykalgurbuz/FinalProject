@@ -3,6 +3,7 @@ using DataAccess.Concreate.EntitiyFramework;
 using DataAccess.Concreate.InMemory;
 
 using System;
+using System.Collections.Generic;
 
 namespace ConsoleUI
 {
@@ -51,6 +52,10 @@ namespace ConsoleUI
             {
                 Console.WriteLine(item.ProductName);
             }
+        
+
+
+          
         }
     }
 }
