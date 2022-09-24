@@ -1,20 +1,25 @@
 ﻿using Business.Abstract;
 using Business.Constant;
+using Business.ValidationRules.FluentValidation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concreate.InMemory;
 using Entities.Concreate;
 using Entities.DTO;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValidationException = FluentValidation.ValidationException;
 
 namespace Business.Concreate
 {
-    public class ProductManager :  IProductService
+    public class ProductManager : IProductService
     {
         IProductDal _productDal;
 
@@ -25,10 +30,7 @@ namespace Business.Concreate
 
         public IResult Add(Product product)
         {
-            if (product.ProductName.Length<2)
-            {
-                return new ErrorResult(Messages.ProductNameInvalid);
-            }
+            ValidationTool.Validate(new ProductValidator(), product);
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
@@ -36,12 +38,12 @@ namespace Business.Concreate
         public IDataResult<List<Product>> GetAll()
         {
             //İş Kodları
-            if (DateTime.Now.Hour==22)
+            if (DateTime.Now.Hour == 22)
             {
                 return new ErrorDataResult<List<Product>>(Messages.MaintananceTime);
             }
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductListed);
-            
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(), Messages.ProductListed);
+
         }
 
         public IDataResult<List<Product>> GetAllByCategoryId(int id)
